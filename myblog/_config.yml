@@ -22,8 +22,8 @@ title: L34K3D
 email: l34k3d@protonmail.com
 description: >- # this means to ignore newlines until "baseurl:"
         Consultor de Cibersegurança, com ênfase em aplicações web. Criei este blog para compartilhar técnicas e write-ups de máquinas e challs de eventos Capture The Flag.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/myblog" # the subpath of your site, e.g. /blog
+url: "https://xl34k3d.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: l34k3d
 github_username:  xL34K3D
 
