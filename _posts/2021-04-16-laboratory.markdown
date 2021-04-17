@@ -5,10 +5,10 @@ date: 2021-04-17 18:00:00 -0300
 categories: Hackthebox
 ---
 ![Image](/assets/Laboratory/1.png)
-# Resumo
+## Resumo
 Olá a todos, este é o write-up da máquina Laboratory do Hack The Box, se trata de uma máquina que mistura CVE com abuso de funcionalidades do Gitlab e exploração de binários que não utilizam o PATH absoluto.
 
-# Recon
+## Recon
 
 
 ### Nmap Inicial
@@ -119,7 +119,7 @@ laboratory
 dexter@laboratory:~$ 
 ```
 
-# Escalação de Privilégios
+## Escalação de Privilégios
 
 Após a [enumeração da máquina](https://book.hacktricks.xyz/linux-unix/privilege-escalation), foi possível identificar um binário diferente com o SUID setado, ou seja, possível vetor para escalação de privilégios pois o binário é executado como **root**. 
 
