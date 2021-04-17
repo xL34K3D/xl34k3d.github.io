@@ -104,7 +104,7 @@ user.update(password: 'novasenha')
 ```
 E assim logamos no gitlab novamente, onde foi possível identificar um repositório privado:
 
-!(/assets/Laboratory/10.png)
+![Image](/assets/Laboratory/10.png)
 
 Neste repositório foi possível encontrar a chave privada de SSH do Dexter, sendo possível agora, acessar a máquina real.
 
