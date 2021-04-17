@@ -18,10 +18,10 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: L34K3D
+title: L34K3D 
 email: l34k3d@protonmail.com
 description: >- 
-        Fazendo devs chorarem desde "2020"
+        Segurança da Informação, Hacking e Pentest
 
 # this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
