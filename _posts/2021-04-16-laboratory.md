@@ -4,7 +4,7 @@ title: "Laboratory - Hackthebox Write-up"
 date: 2021-04-17 18:00:00 -0300
 categories: Hackthebox
 ---
-!(/assets/Laboratory/1.png)
+![Image](/assets/Laboratory/1.png)
 # Resumo
 Olá a todos, este é o write-up da máquina Laboratory do Hack The Box, se trata de uma máquina que mistura CVE com abuso de funcionalidades do Gitlab e exploração de binários que não utilizam o PATH absoluto.
 
