@@ -20,18 +20,22 @@
 
 title: L34K3D
 email: l34k3d@protonmail.com
-description: >- # this means to ignore newlines until "baseurl:"
-        Consultor de Cibersegurança, com ênfase em aplicações web. Criei este blog para compartilhar técnicas e write-ups de máquinas e challs de eventos Capture The Flag.
+description: >- 
+        Fazendo devs chorarem desde "2020"
+
+# this means to ignore newlines until "baseurl:"
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://xl34k3d.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: l34k3d
+twitter_username: l34k3d1
 github_username:  xL34K3D
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
-
+  - jekyll-seo-tag
+  - jekyll-remote-theme
+        
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to

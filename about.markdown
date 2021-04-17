@@ -1,18 +1,8 @@
 ---
 layout: page
-title: About
-permalink: /about/
+title: Sobre
+permalink: /sobre/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
-
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+Consultor Júnior de Cibersegurança, criei este blog para compartilhar técnicas e write-ups de máquinas que estudo no dia a dia, optei por criar o blog inteiro em português para facilitar o estudo e entendimento das técnicas.
+O Objetivo do blog e auxiliar a área de segurança da informação e incentivar a pesquisa e participação em competições Capture The Flag. Espero que gostem! 
