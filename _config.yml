@@ -32,9 +32,9 @@ github_username:  xL34K3D
 # Build settings
 theme: minima
 plugins:
-  - jekyll-feed
+  - jekyll-sitemap
   - jekyll-seo-tag
-  - jekyll-remote-theme
+  - jekyll-avatar
         
 # Exclude from processing.
 # The following items will not be processed, by default.
