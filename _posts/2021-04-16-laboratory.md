@@ -61,40 +61,40 @@ ff02::2 ip6-allrouters
 
 O site *laboratory.htb* se trata de um site estático padrão, com o objetivo de mostrar o trabalho da empresa. Por meio do site é possível identificar alguns possíveis usuários do sistema:
 
-!(/assets/Laboratory/2.png)
+![Image](/assets/Laboratory/2.png)
 
 Já o vhost **git** se trata de um Gitlab, um software open source de colaboração com repositórios e códigos da empresa. Por meio deste site é possível criar uma conta e interagir com a aplicação.
 
-!(/assets/Laboratory/3.png)
+![Image](/assets/Laboratory/3.png)
 
 Visto isto, cadastrei uma conta com um email fictício *l34k3d@laboratory.htb*, para visualizar mais informações sobre esta aplicação. Após a enumeração básica, interagindo com links, foi possível encontrar a versão do Gitlab, que é a 12.8.1.
 
-!(/assets/Laboratory/4.png)
+![Image](/assets/Laboratory/4.png)
 
 Realizando uma rápida pesquisa foi possível encontrar uma [vulnerabilidade](https://packetstormsecurity.com/files/160441/GitLab-File-Read-Remote-Code-Execution.html) de leitura de arquivos para esta versão, que pode evoluir para um RCE (*Remote Code Execution*), caso uma propriedade de configuração consiga ser encontrada.
 
 Como o exploit é feito para o Metasploit, foi realizada a [importação do módulo](https://www.hackers-arise.com/post/2017/06/08/metasploit-basics-part-7-adding-a-new-module-eternalblue) para a sua execução.
 
-!(/assets/Laboratory/5.png)
+![Image](/assets/Laboratory/5.png)
 
 Com o módulo importado, as opções foram configuradas e conseguimos a nossa primeira shell.
 
-!(/assets/Laboratory/6.png)
+![Image](/assets/Laboratory/6.png)
 # Exploração
 
 Após perceber algumas limitações na primeira shell, utilizei um módulo de pós exploração chamado shell_to_meterpreter, que acaba por abrir uma nova sessão com o meterpreter, um payload com mais opções de enumeração.
 
-!(/assets/Laboratory/7.png)
+![Image](/assets/Laboratory/7.png)
 
 Após [enumerar](https://book.hacktricks.xyz/linux-unix/privilege-escalation) a máquina e não encontrar nenhum vetor de ataque para escalação de privilégios, foi identificado que o vhost git.laboratory.htb se trata de um docker.
 
-!(/assets/Laboratory/8.png)
+![Image](/assets/Laboratory/8.png)
 
 Como não estava evoluindo no docker escape, decidi olhar o forúm para receber algumas dicas de como prosseguir, muitos usuários deram a dica de ler a documentação do gitlab.
 Durante a leitura desta documentação, identifiquei que o Gitlab possui uma maneira de interagir diretamente com sua base de dados, com o intuito de resolução de problemas, por meio do [gitlab rails console](https://docs.gitlab.com/ee/administration/troubleshooting/navigating_gitlab_via_rails_console.html).
 Acessando o gitlab rails console foi possível a identificação do usuário dexter, assim, realizei a alteração de sua senha por meio do console e loguei em sua conta por meio do site.
 
-!(/assets/Laboratory/9.png)
+![Image](/assets/Laboratory/9.png)
 
 Para alteração os seguintes comandos foram utilizados:
 
@@ -108,7 +108,7 @@ E assim logamos no gitlab novamente, onde foi possível identificar um repositó
 
 Neste repositório foi possível encontrar a chave privada de SSH do Dexter, sendo possível agora, acessar a máquina real.
 
-!(/assets/Laboratory/11.png)
+![Image](/assets/Laboratory/11.png)
 
 ```bash
 ┌──(l34k3d㉿hanna)-[~/Desktop/HTB/machines/laboratory]
@@ -142,7 +142,7 @@ Por meio do [pspy](https://github.com/DominicBreuker/pspy) foi possível entende
 
 O binário executa um comando que utiliza o **chmod** para alterar a permissão de alguns arquivos do docker. O problema é que o binário *chmod* não está com o caminho completo, abrindo portas para ataques de abuso de PATH, desta forma, criamos um binário chamado *chmod* contendo uma shell reversa e o adicionamos ao nosso PATH de usuário.
 
-!(/assets/Laboratory/12.png)
+![Image](/assets/Laboratory/12.png)
 
 ```bash
 export PATH=/tmp/l34k3d/:$PATH
@@ -150,11 +150,11 @@ export PATH=/tmp/l34k3d/:$PATH
 
 E executamos o script docker-security:
 
-!(/assets/Laboratory/13.png)
+![Image](/assets/Laboratory/13.png)
 
 Após isso, nosso binário chmod malicioso é executado e recebemos a shell como root.
 
-!(/assets/Laboratory/14.png)
+![Image](/assets/Laboratory/14.png)
 
 # Considerações Finais
 As vulnerabilidades que a máquina apresenta são semelhantes a muitos vetores de ataques atualmente, o uso de componentes com vulnerabilidades conhecidas está na OWASP Top 10 e é amplamente explorado por agentes maliciosos.
