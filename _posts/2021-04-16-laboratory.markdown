@@ -40,7 +40,7 @@ nmap -sC -sV -sT 10.10.10.216
 ### Enumeração
 
 Durante a etapa inicial de enumeração foi possível identificar apenas algumas portas abertas, como o serviço do SSH, HTTP e HTTPS, por meio do scan, é possível visualizar que o servidor apache está operando por meio de vhosts.
-Dois *vhosts* foram identificados pelo scan do nmap **git.laboratory.htb** e **laboratory.htb**.
+Dois *vhosts* foram identificados pelo scan do nmap, sendo eles **git.laboratory.htb** e **laboratory.htb**.
 
 ```bash 
 ┌──(l34k3d㉿hanna)-[~/Desktop/HTB/machines/laboratory]
