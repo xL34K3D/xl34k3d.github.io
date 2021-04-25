@@ -157,7 +157,7 @@ Enviamos outra requisição:
 
 ```
 
-E voa-lá, desafio concluído!
+E Voilà, desafio concluído!
 
 ![img](/assets/BlitzProp/7.png)
 
