@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "BlitzProp - Cyber Apocalipse CTF 2021"
+title: "BlitzProp - Cyber Apocalypse CTF 2021"
 date: 2021-04-25 17:00:00 -0300
-categories: CyberApocalipse
+categories: CyberApocalypse
 ---
 ## Resumo
 
