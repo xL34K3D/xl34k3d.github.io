@@ -8,7 +8,7 @@ categories: CyberApocalypse
 
 ![img](/assets/BlitzProp/1.png)
 
-BlitzProp foi um desafio do CTF Cyber Apocalypse realizado pelo Hack The Box e Crypto Hack, envolveu vulnerabilidades como Prototype Pollution, que possibilita o AST Injection permite um RCE.
+BlitzProp foi um desafio do CTF Cyber Apocalypse realizado pelo Hack The Box e Crypto Hack, envolveu vulnerabilidades como Prototype Pollution, que possibilita o AST Injection e evolui para RCE.
 
 ## Recon
 O desafio permitia o download do código fonte da aplicação, que utilizava como backend nodejs, as seguintes dependências existiam para o funcionamento da aplicação:
