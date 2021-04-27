@@ -87,7 +87,7 @@ Podemos perceber que não há nenhuma função que rejeite a entrada de dados po
 
 ## Exploitation
 Como toda avaliação de segurança, após o reconhecimento da aplicação é necessário realizar o levantamento de vulnerabilidades. Conforme anotado na sessão de reconhecimento, temos as dependências *Pug* na versão **3.0.0** e a dependência *Flat* na versão **5.0.0**.
-Um dos melhores sites para pesquisar por vulnerabilidades em pacotes npm é o [snik.io](https://snyk.io/vuln/npm:flat@5.0.0), procurando pela versão do flat, é possível identificar que o mesmo é vulnerável a prototype pollution.
+Um dos melhores sites para pesquisar por vulnerabilidades em pacotes npm é o [snyk.io](https://snyk.io/vuln/npm:flat@5.0.0), procurando pela versão do flat, é possível identificar que o mesmo é vulnerável a prototype pollution.
 
 ![img](/assets/BlitzProp/4.png)
 
@@ -99,9 +99,12 @@ Deste modo, para verificar se o módulo da API estava realmente vulnerável, env
 
 Após esta requisição, todas as requisições para API retornam a compilação do template, comprovando a vulnerabilidade. 
 Avaliando a vulnerabilidade do módulo flat, comecei a procurar por vulnerabilidades relacionadas com a dependência pug, foi onde encontrei uma [vulnerabilidade de RCE](https://snyk.io/vuln/SNYK-JS-PUG-1071616), que permite uma execução de comandos caso seja possível controlar a opção *pretty* do compilador do pug. Porém, não se encaixa na nossa aplicação pois esta opção não é utilizada.
+
 Pesquisando um pouco mais, foi possível encontrar este excelente [artigo](https://blog.p6.is/AST-Injection/) que entrelaça a vulnerabilidade de Prototype Pollution com AST-Injection, desencadeando um RCE em mecanismos de template como o pug, mostrado no artigo.
-[Abstract Syntax Trees (ASTs)](https://www.twilio.com/blog/abstract-syntax-trees) é a representação de código em árvore, são uma parte fundamental da maneira que um compilador trabalha. 
+[Abstract Syntax Trees (ASTs)](https://www.twilio.com/blog/abstract-syntax-trees) é a representação de código em árvore, são uma parte fundamental da maneira que um compilador trabalha.
+
 Dessa forma, podemos realizar uma injeção de AST via prototype pollution, fazendo com que o compilador execute nosso código malicioso.  
+
 De acordo com este [artigo](https://blog.p6.is/AST-Injection/), podemos realizar a injeção do código malicioso no compilador do pug, por meio do objeto *block* realizamos a alteração de uma variável de debug chamada *pug_debug_line* com o código abaixo: 
 
 ```json
