@@ -1,0 +1,154 @@
+---
+layout: post
+title: "Delivery - Hackthebox Write-up"
+date: 2021-05-22 18:00:00 -0300
+categories: Hackthebox
+---
+![img](/assets/Delivery/1.jpg)
+
+## Resumo
+
+Olá a todos, este é o write-up da máquina Delivery do Hackthebox, que é baseada em abuso de funcionalidades, exposição de informações sensíveis e quebra de senhas baseado em regras.
+
+## Recon
+
+### Nmap Inicial
+
+```
+# Nmap 7.91 scan initiated Sun Mar 28 17:14:42 2021 as: nmap -sC -sV -sT -v -oA nmap/nmap 10.10.10.222
+Increasing send delay for 10.10.10.222 from 0 to 5 due to 35 out of 115 dropped probes since last increase.
+Nmap scan report for 10.10.10.222
+Host is up (0.21s latency).
+Not shown: 996 closed ports
+PORT     STATE    SERVICE VERSION
+22/tcp   open     ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 9c:40:fa:85:9b:01:ac:ac:0e:bc:0c:19:51:8a:ee:27 (RSA)
+|   256 5a:0c:c0:3b:9b:76:55:2e:6e:c4:f4:b9:5d:76:17:09 (ECDSA)
+|_  256 b7:9d:f7:48:9d:a2:f2:76:30:fd:42:d3:35:3a:80:8c (ED25519)
+80/tcp   open     http    nginx 1.14.2
+| http-methods: 
+|_  Supported Methods: GET HEAD
+|_http-server-header: nginx/1.14.2
+|_http-title: Welcome
+444/tcp  filtered snpp
+1080/tcp filtered socks
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sun Mar 28 17:15:39 2021 -- 1 IP address (1 host up) scanned in 56.28 seconds
+```
+
+## Enumeração
+
+Ao acessar o endereço na porta 80, temos o seguinte front-end:
+
+![img](/assets/Delivery/2.png)
+
+Podemos mapear que a empresa possui um helpdesk (helpdesk.delivery.htb) e também um domínio próprio chamado delivery.htb. Ao clicar no botão "Contact Us", uma nova mensagem aparece explicando que quando a equipe de suporte fornecer um e-mail do domínio, é possível acessar o servidor Mattermost.
+
+O Mattermost é um serviço de bate-papo on-line de código aberto e auto-host com compartilhamento de arquivos, pesquisa e integrações.
+
+![img](/assets/Delivery/3.png)
+
+A partir destas informações, adicionamos os hosts em nosso arquivo /etc/hosts e podemos acessar o helpdesk para verificar alguma maneira de conseguir um e-mail @delivery.htb.
+
+```
+127.0.0.1       localhost
+127.0.1.1       hanna
+10.10.10.222    delivery.htb helpdesk.delivery.htb
+```
+
+O sistema helpdesk se trata do OSTicket, um sistema de suporte baseado em tickets. Realizando uma rápida pesquisa por exploits, foi possível observar que o sistema possui várias CVE's, porém, nenhuma exploração por meio das CVE's foi possível no ambiente.
+
+## Exploração 
+
+Após mapear as funções do OSTicket, foi detectado que era possível abrir tickets para o suporte, ao abrir o ticket, um e-mail @delivery.htb era fornecido para adicionar mais informações ao mesmo.
+
+![img](/assets/Delivery/4.png)
+
+A partir desta função, conseguimos um e-mail para cadastro no Mattermost, assim que uma conta neste sistema era criada, um e-mail de confirmação era enviado para o endereço cadastrado. Como nós havíamos um e-mail para o ticket, precisávamos apenas utilizá-lo e consultar o ticket depois para ativar a conta.
+
+![img](/assets/Delivery/5.png)
+
+
+![img](/assets/Delivery/6.png)
+
+Após conseguir ativar a conta no mattermost, foi possível encontrar uma mensagem do root solicitando que os desenvolvedores atualizassem o tema do OSTicket, deixando as credenciais para acessar o servidor.
+
+![img](/assets/Delivery/7.png)
+
+Além disso, o root também solicitou aos desenvolvedores a criação de um programa que os ajudassem a parar de reutilizar as mesmas senhas em todos os lugares, especialmente as variantes da senha "PleaseSubscribe!". Além disso, informou que por mais que esta senha não esteja no rockyou, é possível quebrá-la facilmente caso o atacante possua a hash da senha, utilizando o programa hashcat. 
+
+![img](/assets/Delivery/8.png)
+
+A partir das informações fornecidas pelo root, podemos entender que o mesmo utiliza variantes da senha "PleaseSubscribe!", além disso, também nos informa que as pessoas da organização tem costume de reutilizar as senhas em todos os lugares. 
+
+Após entrar no SSH com as credenciais fornecidas, ficou claro com as dicas anteriores que seria necessário uma hash do root para que fosse possível a escalação de privilégio. Como o root havia uma conta no Mattermost e geralmente um site necessita de um arquivo de configuração, foquei a enumeração atrás deste arquivo.
+
+O arquivo de configuração do Mattermost estava na pasta /opt/mattermost/config/config.json:
+
+```bash
+maildeliverer@Delivery:/opt/mattermost/config$ cat config.json                                                                                
+{                                                                                                                                             
+    "ServiceSettings": {                                               
+        "SiteURL": "",                                                                                                                        
+        "WebsocketURL": "",                                            
+        "LicenseFileLocation": "",                                                                                                            
+        "ListenAddress": ":8065",                                      
+        "ConnectionSecurity": "",                                      
+        "TLSCertFile": "",                                             
+        "TLSKeyFile": "",                                              
+        "TLSMinVer": "1.2",                              
+...[SNIPPED]...
+	"SqlSettings": {
+        "DriverName": "mysql",
+        "DataSource": "mmuser:Crack_The_MM_Admin_PW@tcp(127.0.0.1:3306)/mattermost?charset=utf8mb4,utf8\u0026readTimeout=30s\u0026writeTimeout
+=30s",
+        "DataSourceReplicas": [],
+        "DataSourceSearchReplicas": [],
+        "MaxIdleConns": 20,
+        "ConnMaxLifetimeMilliseconds": 3600000,
+        "MaxOpenConns": 300,
+        "Trace": false,
+        "AtRestEncryptKey": "n5uax3d4f919obtsp1pw1k5xetq1enez",
+        "QueryTimeout": 30,
+        "DisableDatabaseSearch": false
+    }
+...[SNIPPED]...
+```
+
+Após ler o arquivo de configuração, encontramos as credenciais para acessar o banco de dados do site, sendo ela:
+
+| Login | Senha  
+|:--------:|:-------------------------------:|
+| mmuser | Crack\_The\_MM\_Admin\_PW |
+
+Com as credenciais do banco de dados, realizamos a extração das hashes dos usuários, para conseguir a hash do root.
+
+![img](/assets/Delivery/9.png)
+
+Com a hash do root, realizei o ataque de força bruta offline com o hashcat, utilizando as regras, conforme a dica que estava presente no Mattermost.
+
+```bash
+┌──(l34k3d㉿hanna)-[~/Desktop/HTB/machines/delivery]
+└─$ hashcat -m 3200 hashes.lst wordlist.txt -r /usr/share/hashcat/rules/*  --force
+```
+
+![img](/assets/Delivery/10.png)
+
+Após a sua quebra, conseguimos descobrir a variante de senha que o usuário root está utilizando no Mattermost, que é "PleaseSubscribe!21".
+
+Reutilizando esta mesma senha, conseguimos escalar privilégios na máquina e conseguir total controle sobre ela.
+
+![img](/assets/Delivery/11.png)
+
+## Considerações Finais
+
+Como sempre dito durante todo o meu tempo de faculdade, o ser humano é o elo mais fraco da segurança da informação, por mais seguro que seja o sistema, ainda é possível invadir totalmente uma organização por meio de erros comuns como reutilização de senhas em vários sistemas e credenciais expostas indevidamente.
+
+A máquina Delivery consegue demonstrar que certas funcionalidades são programadas para serem úteis a um único sistema, porém, podem ser abusadas para conseguir outros tipos de acesso em um ambiente mais amplo, sendo necessário sempre avaliar o ecossistema da organização quando uma nova funcionalidade for implantada.
+
+Espero que tenham gostado deste write-up, sigo à disposição para dúvidas!
+
